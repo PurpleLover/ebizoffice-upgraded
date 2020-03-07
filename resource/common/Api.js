@@ -34,7 +34,7 @@ const baseApi = () => {
 
   return {
     get,
-    post
+    post,
   };
 }
 const api = baseApi();
@@ -143,7 +143,7 @@ const carApi = () => {
     cancelRegistration,
     getList,
     getCanbo,
-    checkRegistration
+    checkRegistration,
   };
 }
 
@@ -165,7 +165,7 @@ const tripApi = () => {
     getDetailByRegistrationId,
     startTrip,
     returnTrip,
-    getList
+    getList,
   };
 }
 
@@ -173,6 +173,7 @@ const meetingRoomApi = () => {
   const getRooms = (payloadBody = {}) => api.post("MeetingRoom/SearchPhonghop", payloadBody);
   const saveRoom = (payloadBody = {}) => api.post("MeetingRoom/SavePhonghop", payloadBody);
   const getCreateHelper = (params = []) => api.get("MeetingRoom/CreateLichhop", params);
+  const getEditHelper = (params = []) => api.get("MeetingRoom/EditLichhop", params);
   const saveCalendar = (payloadBody = {}) => api.post("MeetingRoom/SaveLichhop", payloadBody);
   const getDetail = (params = []) => api.get("MeetingRoom/DetailLichhop", params);
   const cancelCalendar = (payloadBody = {}) => api.post("MeetingRoom/CancelLichhop", payloadBody);
@@ -195,6 +196,7 @@ const meetingRoomApi = () => {
     getInviteListPerson,
     getInviteListRole,
     getInviteListDept,
+    getEditHelper,
   };
 }
 
@@ -212,7 +214,7 @@ const reminderApi = () => {
     saveReminder,
     deleteReminder,
     toggleReminder,
-    getWhoseReminder
+    getWhoseReminder,
   };
 }
 
@@ -232,23 +234,42 @@ const vanbandiApi = () => {
   const getDetail = (params = []) => api.get("VanBanDi/GetDetail", params);
   const getList = (params = []) => api.get("VanBanDi", params);
   const getSignedUnit = (params = []) => api.get("VanBanDi/SearchInternalUnit", params);
+  const getAttachment = (urlParams = "") => api.post(`VanBanDi/SearchAttachment${urlParams}`);
+  const getInternalUnits = (urlParams = "") => api.get(`VanBanDi/SearchInternalUnit${urlParams}`);
+  const getSearchList = (params = []) => api.get("VanBanDi", params);
+  const saveReplyReview = (payloadBody = {}) => api.post("VanBanDi/SaveReplyReview", payloadBody);
+  const getFlow = (params = []) => api.get("VanBanDi/GetFlow", params);
+  const getUserReview = (params = []) => api.get("VanBanDi/SearchUserReview", params);
+  const saveReview = (payloadBody = {}) => api.post("VanBanDi/SaveReview", payloadBody);
+  const getComment = (params = []) => api.get("VanBanDi/GetRootCommentsOfVanBan", params);
+  const saveComment = (payloadBody = {}) => api.post("VanBanDi/SaveComment", payloadBody);
+  const getRepliesOfComment = (params = []) => api.get("VanBanDi/GetRepliesOfComment", params);
 
   return {
     getDetail,
     getList,
     getSignedUnit,
+    getAttachment,
+    getInternalUnits,
+    getSearchList,
+    saveReplyReview,
+    getFlow,
+    getUserReview,
+    saveReview,
+    getComment,
+    saveComment,
+    getRepliesOfComment,
   };
 }
 
 const taskApi = () => {
-  //active
   const getCreateHelper = (params = []) => api.get("HscvCongViec/GetTaskCreationHelper", params);
   const saveTask = (payloadBody = {}) => api.post("HscvCongViec/CreateTask", payloadBody);
   const saveSubTask = (payloadBody = {}) => api.post("HscvCongViec/CreateSubTask", payloadBody);
   const getDetail = (params = []) => api.get("HscvCongViec/JobDetail", params);
   const startTask = (payloadBody = {}) => api.post("HscvCongViec/BeginProcess", payloadBody);
   const getTaskAssigner = (payloadBody = {}) => api.post("HscvCongViec/GetListGiaoviec", payloadBody);
-  const getAttachment = (payloadBody = {}) => api.post("", payloadBody);
+  const getAttachment = (urlParams = "") => api.post(`HscvCongViec/SearchAttachment${urlParams}`);
   const getList = (params = []) => api.get("HscvCongViec", params);
   const getAssignHelper = (params = []) => api.get("HscvCongViec/AssignTask", params);
   const getAssignedUser = (payloadBody = {}) => api.post("HscvCongViec/GetUserToAssignTask", payloadBody);
@@ -257,7 +278,17 @@ const taskApi = () => {
   const saveCompleteSubTask = (payloadBody = {}) => api.post("HscvCongViec/CompleteSubTask", payloadBody);
   const updateProgressTask = (payloadBody = {}) => api.post("HscvCongViec/UpdateProgressTask", payloadBody);
   const saveExtendTask = (payloadBody = {}) => api.post("HscvCongViec/SaveExtendTask", payloadBody);
-  //TODO: added plan to deprecated
+  const getCalculatedPoint = (params = []) => api.get("HscvCongViec/CalculateTaskPoint", params);
+  const saveEvaluationPoint = (payloadBody = {}) => api.post("HscvCongViec/SaveEvaluationTask", payloadBody);
+  const getListEvaluation = (params = []) => api.get("HscvCongViec/GetListSubmit", params);
+  const getListPlan = (params = []) => api.get("HscvCongViec/GetListProgressTask", params);
+  const getListProgress = (params = []) => api.get("HscvCongViec/GetListProgressTask", params);
+  const getListReschedule = (params = []) => api.get("HscvCongViec/GetListRescheduleTask", params);
+  const getListFilterTask = (params = [], apiUrl = "") => api.get(`HscvCongViec/${apiUrl}`, params);
+  const getComment = (params = []) => api.get("HscvCongViec/GetRootCommentsOfTask", params);
+  const saveComment = (payloadBody = {}) => api.post("HscvCongViec/SaveComment", payloadBody);
+  const getRepliesOfComment = (params = []) => api.get("HscvCongViec/GetRepliesOfComment", params);
+  const saveConfirmReschedule = (payloadBody = {}) => api.post("HscvCongViec/ApproveExtendTask", payloadBody);
 
   return {
     getCreateHelper,
@@ -274,6 +305,18 @@ const taskApi = () => {
     saveCompleteSubTask,
     updateProgressTask,
     saveExtendTask,
+    getCalculatedPoint,
+    saveEvaluationPoint,
+    getListEvaluation,
+    getListPlan,
+    getListProgress,
+    getListReschedule,
+    getListFilterTask,
+    getAttachment,
+    getComment,
+    saveComment,
+    getRepliesOfComment,
+    saveConfirmReschedule,
   };
 }
 

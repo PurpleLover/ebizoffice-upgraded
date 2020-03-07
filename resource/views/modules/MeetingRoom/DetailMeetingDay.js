@@ -8,40 +8,27 @@ import React, { Component } from 'react';
 import { View, Text as RNText, TouchableOpacity as RnButton } from 'react-native';
 //redux
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
 
 //utilities
-import { API_URL, Colors, DATXE_CONSTANT, TOAST_DURATION_TIMEOUT } from '../../../common/SystemConstant';
-import { asyncDelay, unAuthorizePage, backHandlerConfig, appGetDataAndNavigate, appStoreDataAndNavigate } from '../../../common/Utilities';
+import { Colors, TOAST_DURATION_TIMEOUT } from '../../../common/SystemConstant';
 import { dataLoading, executeLoading } from '../../../common/Effect';
-import * as util from 'lodash';
-import { moderateScale } from '../../../assets/styles/ScaleIndicator';
+import util from 'lodash';
 
-//styles
-import { TabStyle } from '../../../assets/styles/TabStyle';
 import { NativeBaseStyle } from '../../../assets/styles/NativeBaseStyle';
 import { ButtonGroupStyle } from '../../../assets/styles/ButtonGroupStyle';
 //lib
 import {
-  Container, Header, Left, Button,
-  Body, Icon, Title, Content, Form,
-  Tabs, Tab, TabHeading, ScrollableTab,
-  Text, Right, Toast
+  Container, Header, Left, Body, Title, Right, Toast
 } from 'native-base';
-import {
-  Icon as RneIcon, ButtonGroup
-} from 'react-native-elements';
-
-import renderIf from 'render-if';
+import { ButtonGroup } from 'react-native-elements';
 
 //views
-
 import * as navAction from '../../../redux/modules/Nav/Action';
-import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
-import { HeaderMenuStyle, AlertMessageStyle } from '../../../assets/styles';
+import { AlertMessageStyle } from '../../../assets/styles';
 import InfoMeetingDay from './InfoMeetingDay';
 import { AlertMessage, GoBackButton } from '../../common';
 import { meetingRoomApi } from '../../../common/Api';
+import { WorkflowButton } from '../../common/DetailCommon';
 
 const MeetingRoomApi = meetingRoomApi();
 
@@ -167,6 +154,13 @@ class DetailMeetingDay extends Component {
     });
   }
 
+  onEditCalendar = () => {
+    this.onNavigate('CreateMeetingDayScreen', {
+      isEdit: true,
+      lichhopId: this.state.lichhopId,
+    });
+  }
+
   onNavigate(targetScreenName, targetScreenParam) {
     if (!util.isNull(targetScreenParam)) {
       this.props.updateExtendsNavParams(targetScreenParam);
@@ -176,7 +170,7 @@ class DetailMeetingDay extends Component {
 
   render() {
     const {
-      canBookingRoom, entity
+      canBookingRoom, entity, canDeleteCalendar
     } = this.state.lichhopInfo;
     let bodyContent = null;
     let workflowButtons = [];
@@ -186,18 +180,24 @@ class DetailMeetingDay extends Component {
     else {
       if (canBookingRoom) {
         workflowButtons.push({
-          element: () => <RnButton style={ButtonGroupStyle.button} onPress={() => this.onConfirmAction(1)}><RNText style={ButtonGroupStyle.buttonText}>HUỶ LỊCH HỌP</RNText></RnButton>
-        })
+          element: () => <WorkflowButton onPress={() => this.onConfirmAction(1)} btnText="HUỶ LỊCH" />
+        });
         // if (entity.PHONGHOP_ID) {
         //   workflowButtons.push({
-        //     element: () => <RnButton style={ButtonGroupStyle.button} onPress={() => this.onConfirmAction(1)}><RNText style={ButtonGroupStyle.buttonText}>HUỶ ĐẶT PHÒNG</RNText></RnButton>
+        //     element: () => <WorkflowButton onPress={() => this.onConfirmAction(1)} btnText="HUỶ ĐẶT PHÒNG" />
         //   })
         // }
         if (!entity.PHONGHOP_ID) {
           workflowButtons.push({
-            element: () => <RnButton style={ButtonGroupStyle.button} onPress={() => this.onSelectRoom()}><RNText style={ButtonGroupStyle.buttonText}>ĐẶT PHÒNG</RNText></RnButton>
-          })
+            element: () => <WorkflowButton onPress={() => this.onSelectRoom()} btnText="ĐẶT PHÒNG" />
+          });
         }
+      }
+
+      if (canDeleteCalendar) {
+        workflowButtons.push({
+          element: () => <WorkflowButton onPress={() => this.onEditCalendar()} btnText="SỬA LỊCH" />
+        });
       }
 
       bodyContent = <DetailContent lichhopInfo={this.state.lichhopInfo} buttons={workflowButtons} />

@@ -5,31 +5,25 @@
 */
 'use strict'
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
 //lib
 import {
-	Container, Header, Left, Body, Content,
-	Right, Item, Title, Text, Icon, Input,
+	Container, Header, Left, Body, Right, Item, Title, Text, Icon, Input,
 	Button, Form, Picker, Toast, Label
 } from 'native-base'
-import { Icon as RneIcon } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
 //utilities
-import { API_URL, HEADER_COLOR, EMPTY_STRING, Colors, TOAST_DURATION_TIMEOUT } from '../../../common/SystemConstant';
+import { EMPTY_STRING, Colors, TOAST_DURATION_TIMEOUT } from '../../../common/SystemConstant';
 import { verticalScale } from '../../../assets/styles/ScaleIndicator';
 import { executeLoading } from '../../../common/Effect';
-import { asyncDelay, convertDateToString, backHandlerConfig, appGetDataAndNavigate, pickerFormat, showWarningToast } from '../../../common/Utilities';
+import { pickerFormat, showWarningToast } from '../../../common/Utilities';
 import * as util from 'lodash';
 
 //redux
 import { connect } from 'react-redux';
 import * as navAction from '../../../redux/modules/Nav/Action';
 
-//style
-import { scale, moderateScale } from '../../../assets/styles/ScaleIndicator';
 import { NativeBaseStyle } from '../../../assets/styles/NativeBaseStyle';
-import AccountStyle from '../../../assets/styles/AccountStyle';
 import { GoBackButton } from '../../common';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { taskApi } from '../../../common/Api';
@@ -54,7 +48,9 @@ class CreateSubTask extends Component {
 			planValue: '0', //lập kế hoạch 
 
 			executing: false,
-			chosenDate: null
+			chosenDate: null,
+			canFinishTask: props.extendsNavParams.canFinishTask || false,
+      canAssignTask: props.extendsNavParams.canAssignTask || false,
 		}
 	}
 
@@ -133,9 +129,11 @@ class CreateSubTask extends Component {
 					if (resultJson.Status) {
 						this.props.updateExtendsNavParams({
 							check: true,
-							from: "createSubTask"
+							fromScreen: "createSubTask",
+							canFinishTask: this.state.canFinishTask,
+							canAssignTask: this.state.canAssignTask,
 						});
-						this.navigateBackToDetail();
+						this.props.navigation.navigate('GroupSubTaskScreen');
 					}
 				}
 			});

@@ -18,7 +18,7 @@ import 'moment/locale/vi';
 import { EMPTY_STRING, Colors, TOAST_DURATION_TIMEOUT } from '../../../common/SystemConstant';
 import { verticalScale } from '../../../assets/styles/ScaleIndicator';
 import { executeLoading, dataLoading } from '../../../common/Effect';
-import { showWarningToast } from '../../../common/Utilities';
+import { showWarningToast, convertDateToString } from '../../../common/Utilities';
 
 //redux
 import { connect } from 'react-redux';
@@ -26,11 +26,10 @@ import * as navAction from '../../../redux/modules/Nav/Action';
 
 import { NativeBaseStyle } from '../../../assets/styles/NativeBaseStyle';
 import AccountStyle from '../../../assets/styles/AccountStyle';
-import GoBackButton from '../../common/GoBackButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { meetingRoomApi } from '../../../common/Api';
 import { DatePickerCustomStyle, CustomStylesDatepicker } from '../../../assets/styles';
-import { CustomPickerButton, HeaderRightButton } from '../../common';
+import { CustomPickerButton, HeaderRightButton, GoBackButton } from '../../common';
 
 const MeetingRoomApi = meetingRoomApi();
 
@@ -70,6 +69,9 @@ class CreateMeetingDay extends Component {
       joinVaitroText: [],
       joinPhongId: [],
       joinPhongText: [],
+
+      isEdit: props.extendsNavParams.isEdit || false,
+      lichhopId: props.extendsNavParams.lichhopId || 0,
     }
   }
 
@@ -150,14 +152,53 @@ class CreateMeetingDay extends Component {
       loading: true
     });
 
-    const resultJson = await MeetingRoomApi.getCreateHelper([
-      this.state.userId
-    ]);
+    const { isEdit, lichhopId, userId } = this.state;
 
-    this.setState({
-      loading: false,
-      canCreateMeetingForOthers: resultJson.Status || false
-    });
+    if (isEdit) {
+      const resultJson = await MeetingRoomApi.getEditHelper([
+        lichhopId,
+        userId,
+      ]);
+
+      if (resultJson.Status) {
+        const { objBO, canBookingRoom } = resultJson.Params;
+
+        this.setState({
+          loading: false,
+          mucdich: objBO.MUCDICH || EMPTY_STRING,
+          thamgia: objBO.THANHPHAN_THAMDU || EMPTY_STRING,
+          ngayHop: convertDateToString(objBO.NGAY_HOP) || EMPTY_STRING,
+          thoigianBatdau: `${objBO.GIO_BATDAU}:${objBO.PHUT_BATDAU}`,
+          thoigianKetthuc: `${objBO.GIO_KETTHUC}:${objBO.PHUT_KETTHUC}`,
+          chutriId: objBO.NGUOICHUTRI || 0,
+          chutriName: objBO.TEN_NGUOICHUTRI || EMPTY_STRING,
+          lichCongtacId: objBO.LICHCONGTAC_ID || 0,
+          phonghopId: objBO.PHONGHOP_ID || 0,
+          phonghopName: objBO.TEN_PHONG || EMPTY_STRING,
+          joinNguoiId: !!objBO.TD_NGUOI_ID ? objBO.TD_NGUOI_ID.split(',') : [],
+          joinNguoiText: !!objBO.TD_NGUOI_TEXT ? objBO.TD_NGUOI_TEXT.split(',') : [],
+          joinVaitroId: !!objBO.TD_VAITRO_ID ? objBO.TD_VAITRO_ID.split(',') : [],
+          joinVaitroText: !!objBO.TD_VAITRO_TEXT ? objBO.TD_VAITRO_TEXT.split(',') : [],
+          joinPhongId: !!objBO.TD_PHONG_ID ? objBO.TD_PHONG_ID.split(',') : [],
+          joinPhongText: !!objBO.TD_PHONG_TEXT ? objBO.TD_PHONG_TEXT.split(',') : [],
+          canCreateMeetingForOthers: canBookingRoom || false,
+          joinPlaceholderText: objBO.THANHPHAN_THAMDU || EMPTY_STRING,
+        });
+      }
+      else {
+        showWarningToast('Không tìm thấy lịch họp cần sửa');
+      }
+    }
+    else {
+      const resultJson = await MeetingRoomApi.getCreateHelper([
+        userId
+      ]);
+
+      this.setState({
+        loading: false,
+        canCreateMeetingForOthers: resultJson.Status || false,
+      });
+    }
   }
 
   onPickChutri = async () => {
@@ -239,7 +280,7 @@ class CreateMeetingDay extends Component {
       mucdich, thamgia, chutriId, thoigianBatdau, thoigianKetthuc, ngayHop, userId, lichCongtacId, phonghopId,
       canCreateMeetingForOthers, isFromCalendar,
       joinNguoiId, joinNguoiText, joinPhongId, joinPhongText, joinVaitroText, joinVaitroId,
-      joinPlaceholderText,
+      joinPlaceholderText, lichhopId,
     } = this.state;
 
     if (!mucdich) {
@@ -258,6 +299,7 @@ class CreateMeetingDay extends Component {
       });
 
       const resultJson = await MeetingRoomApi.saveCalendar({
+        lichhopId,
         mucdich,
         thamgia: thamgia || joinPlaceholderText,
         ngayHop,
@@ -488,15 +530,14 @@ class CreateMeetingDay extends Component {
 const mapStateToProps = (state) => {
   return {
     userInfo: state.userState.userInfo,
-    // coreNavParams: state.navState.coreNavParams,
-    extendsNavParams: state.navState.extendsNavParams
+    extendsNavParams: state.navState.extendsNavParams,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     updateExtendsNavParams: (extendsNavParams) => dispatch(navAction.updateExtendsNavParams(extendsNavParams)),
-    updateCoreNavParams: (coreNavParams) => dispatch(navAction.updateCoreNavParams(coreNavParams))
+    updateCoreNavParams: (coreNavParams) => dispatch(navAction.updateCoreNavParams(coreNavParams)),
   }
 }
 
