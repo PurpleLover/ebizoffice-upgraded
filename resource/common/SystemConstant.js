@@ -1,11 +1,11 @@
-import { Dimensions } from 'react-native'
 import { moderateScale } from '../assets/styles/ScaleIndicator';
 // export const WEB_URL = 'http://vanban.vnio.vn'; //web vnio
 // export const WEB_URL = 'http://192.168.1.10:8022/'; //local web test
 export const WEB_URL = 'http://222.252.27.60:8025';//remote web test
-// export const API_URL = 'http://101.96.76.204:8999'; //api vnio
-// export const API_URL = 'http://192.168.1.36:59468'; //local api test
-export const API_URL = 'http://222.252.27.60:8226'; //remote api test
+export const API_URL = 'http://vanban.vnio.vn:8999'; //api vnio
+// export const API_URL = 'http://192.168.1.10:8111'; //local api test
+//export const API_URL = 'http://222.252.27.60:8226'; //remote api test
+
 
 export const DEFAULT_PAGE_SIZE = 20;
 export const DEFAULT_PAGE_INDEX = 1;
@@ -13,14 +13,8 @@ export const DEFAULT_PAGE_INDEX = 1;
 export const EMPTY_STRING = '';
 
 export const EMTPY_DATA_MESSAGE = 'KHÔNG CÓ DỮ LIỆU';
-export const EMPTY_DATA_ICON_URI = require('../assets/images/empty_data.png');
-export const SAD_FACE_ICON_URI = require('../assets/images/error.png');
-
-export const { width, height } = Dimensions.get('window');
 
 export const HEADER_COLOR = '#FF0033'
-export const SUB_HEADER_COLOR = '#F7A30A';
-export const SEARCHBAR_COLOR = '#FCC954';
 export const LOADER_COLOR = '#0082ba';
 export const LOADMORE_COLOR = '#0082ba';
 
@@ -479,7 +473,7 @@ export const HTML_STRIP_PATTERN = /<[^>]*>?/gm;
 
 export function generateBadgeIconNoti(itemType) {
 	let badgeBackgroundColor = Colors.GRAY,
-		leftTitle = "CV";
+		leftTitle = "NN";
 
 	switch (itemType) {
 		case "HSVanBanDi":
