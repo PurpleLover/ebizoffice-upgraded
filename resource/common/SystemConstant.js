@@ -1,11 +1,11 @@
 import { Dimensions } from 'react-native'
 import { moderateScale } from '../assets/styles/ScaleIndicator';
-export const WEB_URL = 'http://vanban.vnio.vn'; //web vnio
+// export const WEB_URL = 'http://vanban.vnio.vn'; //web vnio
 // export const WEB_URL = 'http://192.168.1.10:8022/'; //local web test
-// export const WEB_URL = 'http://222.252.27.60:8022';//remote web test
-export const API_URL = 'http://101.96.76.204:8999'; //api vnio
-// export const API_URL = 'http://192.168.1.10:8111'; //local api test
-// export const API_URL = 'http://222.252.27.60:8111'; //remote api test
+export const WEB_URL = 'http://222.252.27.60:8025';//remote web test
+// export const API_URL = 'http://101.96.76.204:8999'; //api vnio
+// export const API_URL = 'http://192.168.1.36:59468'; //local api test
+export const API_URL = 'http://222.252.27.60:8226'; //remote api test
 
 export const DEFAULT_PAGE_SIZE = 20;
 export const DEFAULT_PAGE_INDEX = 1;
